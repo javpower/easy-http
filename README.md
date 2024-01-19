@@ -32,7 +32,7 @@ EasyHttp有哪些特性？
 <dependency>
     <groupId>io.github.javpower</groupId>
     <artifactId>easy-http-spring-boot-starter</artifactId>
-    <version>2.7.18.1</version>
+    <version>2.7.18.2</version>
 </dependency>
 ```
 
