@@ -1,32 +1,25 @@
-<h1 align="center">EasyHttp - 声明式HTTP客户端框架</h1>
+---
 
-项目介绍：
--------------------------------------
+# 🚀 EasyHttp: 声明式HTTP客户端框架
 
+`EasyHttp` 是一个基于注解的声明式HTTP客户端框架，旨在简化HTTP请求的发送过程，让调用第三方HTTP API变得轻松而直观。
 
-很多⼤名鼎鼎的http开源框架可以实现任何形式的http调⽤，⽐如 apache 的 httpClient 包，⾮常优秀的 Okhttp ， jersey client 。
-这些 http 开源框架的接⼝使⽤相对来说，都不太⼀样。不管选哪个，在我这个场景⾥来说，我都不希望在调⽤每个第三⽅的http api时写上⼀堆http调⽤代码。<br>
-相比于这些您不再用写一大堆重复的代码了，EasyHttp是一个高层的、极简的声明式HTTP调用API框架，像调用本地方法一样去发送HTTP请求<br>
+## ✨ 特性亮点
 
-EasyHttp有哪些特性？
------
-* 以OkHttp为后端框架，全注解式请求
-* 通过调用本地方法的方式去发送Http请求, 实现了业务逻辑与Http协议之间的解耦
-* 可扩展微服务之间的调用
-* 支持所有请求方法：GET, HEAD, OPTIONS, TRACE, POST, DELETE, PUT, PATCH
-* 支持前置Before处理：参数修改加密、代理、Cookie、Token等
-* 支持后置Fallback异常自定义处理
-* 支持Spring和Springboot集成
-* JSON格式数据序列化和反序列化
-* @EnableEasyHttpRequest、@EasyHttp、@EasyHttpRequest三个注解就能完成所有请求的定义
+- **基于OkHttp**：强大的底层实现，提供高效的网络操作。
+- **全注解式**：通过注解配置请求，简化了模板代码。
+- **本地方法风格**：以调用本地方法的方式发送HTTP请求，提高开发效率。
+- **微服务支持**：支持微服务架构中的服务间调用。
+- **多种请求方法**：支持GET、POST、PUT、DELETE等多种HTTP方法。
+- **前置与后置处理**：支持自定义前置请求处理和异常后置处理。
+- **Spring生态集成**：完美集成Spring和Spring Boot。
+- **JSON支持**：内建JSON数据序列化和反序列化功能。
 
-极速开始
--------------------------------------
-以下例子基于Spring Boot
+## 📦 极速开始
 
-### 第一步：添加Maven依赖
+### 添加Maven依赖
 
-直接添加以下maven依赖即可
+在项目的 `pom.xml` 文件中添加以下依赖：
 
 ```xml
 <dependency>
@@ -36,66 +29,55 @@ EasyHttp有哪些特性？
 </dependency>
 ```
 
-### 第二步：创建一个`interface`
+### 创建接口
+
+定义一个接口并使用 `EasyHttp` 的注解来声明HTTP请求：
 
 ```java
-
-
-import com.gc.easy.http.EasyHttp;
-import com.gc.easy.http.EasyHttpRequest;
-import com.gc.easy.http.EasyHttpVo;
-import com.gc.easy.http.Param;
-import org.springframework.http.HttpMethod;
-
-
 @EasyHttp(baseUrl = "https://www.xxx.cc")
 public interface TestPlatformApiService {
-    @EasyHttpRequest(method = HttpMethod.POST,
-            value = "/api/test",
-            body = TestPersonAdd.class)
-    EasyHttpVo<?> addPerson(TestPersonAdd add);
-    
-    @EasyHttpRequest(method = HttpMethod.POST,
-            value = "/api/v1/passport/comm/sendEmailVerify",
-            formName = {"email"}
-    )
+    @EasyHttpRequest(method = HttpMethod.POST, value = "/api/test")
+    EasyHttpVo<?> addPerson(@Body TestPersonAdd add);
+
+    @EasyHttpRequest(method = HttpMethod.POST, value = "/api/v1/passport/comm/sendEmailVerify")
     TestVo sendEmailVerify(@Param("email") String email);
 }
-
-
 ```
 
-### 第三步：扫描接口
+### 扫描接口
 
-在Spring Boot的配置类或者启动类上加上`@EnableEasyHttpRequest`注解，并在`value`或`basePackages`属性里填上远程接口的所在的包名
+在Spring Boot的配置类或启动类上加上 `@EnableEasyHttpRequest` 注解：
 
 ```java
 @SpringBootApplication
-@EnableScheduling
-@EnableEasyHttpRequest("com.gc.subscribeboot.test")
+@EnableEasyHttpRequest(basePackages = "com.gc.subscribeboot.test")
 public class SubscribebootApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(SubscribebootApplication.class, args);
     }
 }
 ```
 
-### 第四步：调用接口
+### 调用接口
 
-OK，我们可以愉快地调用接口了
+注入接口实例并调用定义的方法：
 
 ```java
-// 注入接口实例
 @Autowired
 private TestPlatformApiService testPlatformApiService;
-...
+
 // 调用接口
-        TestVo baidu = testPlatformApiService.sendEmailVerify("1www7ggg@nqmo.com");
-        System.out.println(baidu.toString());
+TestVo response = testPlatformApiService.sendEmailVerify("example@example.com");
+System.out.println(response.toString());
 ```
 
-## 注解描述
+## 📝 注解描述
+
+`EasyHttp` 提供了三个主要注解：
+
+- `@EasyHttp`：定义基础URL和其他配置。
+- `@EasyHttpRequest`：定义具体的HTTP请求。
+- `@Param`：用于将方法参数绑定到请求的不同部分。
 
 ```java
 @EasyHttp(baseUrl = "https://www.xxx.cc", //Http请求前缀，支持${}配置文件中获取 （可选）
@@ -152,9 +134,9 @@ public @interface EasyHttpRequest {
 
 ```
 
-## 微服务扩展
-   需实现 ServiceDiscoveryClient <br>
-   下面给出Consul、Eureka、Nacos三种例子 <br>
+## 🔧 微服务扩展
+
+`EasyHttp` 支持与常见的服务发现工具集成，如Consul、Eureka、Nacos。
 ```java
 /**
  * 如果使用的是Consul
@@ -223,7 +205,11 @@ public @interface EasyHttpRequest {
       }
   }
 ```
-## 请求日志
+
+## 📜 请求日志
+
+`EasyHttp` 提供了详细的请求日志，帮助开发者调试和监控API调用。
+
 
 ```java
 2024-01-14 14:35:43.242  INFO 44921 --- [           main] c.g.e.h.handler.EasyHttpRequestHandler   : --> POST https://www.xxx.cc/api/v1/passport/comm/sendEmailVerify
@@ -255,3 +241,17 @@ public @interface EasyHttpRequest {
         2024-01-14 14:35:44.235  INFO 44921 --- [           main] c.g.e.h.handler.EasyHttpRequestHandler   : <-- END HTTP (13-byte body)
 
 ```
+
+## 🤝 贡献指南
+
+我们欢迎任何形式的贡献。如果您有任何想法或改进，请通过 pull request 发送给我们。
+
+## 📜 许可证
+
+请在项目页面查看 `LICENSE` 文件以了解项目的许可证信息。
+
+## 🙏 致谢
+
+感谢 `OkHttp` 团队提供的出色HTTP客户端库，以及所有为 `EasyHttp` 贡献的开发者。
+
+---
