@@ -1,4 +1,3 @@
----
 
 # 🚀 EasyHttp: 声明式HTTP客户端框架
 
@@ -253,5 +252,3 @@ public @interface EasyHttpRequest {
 ## 🙏 致谢
 
 感谢 `OkHttp` 团队提供的出色HTTP客户端库，以及所有为 `EasyHttp` 贡献的开发者。
-
----
